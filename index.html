@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="tg" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Обёрии Механикӣ — Платформаи Ҳисоби Самаранокӣ</title>
+    <meta
+      name="description"
+      content="Мини-платформаи интерактивии ҳисоби самаранокии обёрии механикӣ ва иқтисодиёти зироатҳо дар Тоҷикистон."
+    />
+    <meta property="og:title" content="Обёрии Механикӣ — Платформаи Ҳисоби Самаранокӣ" />
+    <meta
+      property="og:description"
+      content="Мини-платформаи интерактивии ҳисоби самаранокии обёрии механикӣ ва иқтисодиёти зироатҳо дар Тоҷикистон."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Cyrillic-complete 2+1 typography pairing -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS via CDN (zero-build GitHub Pages ready) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['"Manrope"', 'sans-serif'],
+              sans: ['"IBM Plex Sans"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              canal: {
+                50: '#F0F9FF',
+                100: '#E0F2FE',
+                500: '#0EA5E9',
+                600: '#0284C7',
+                700: '#0369A1',
+                900: '#0C4A6E',
+              },
+              agrarian: {
+                50: '#F0FDF4',
+                100: '#DCFCE7',
+                600: '#16A34A',
+                700: '#15803D',
+                900: '#14532D',
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- GSAP Animation Library via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      body {
+        font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1, h2, h3, .font-display {
+        font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+      }
+
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .text-balance {
+        text-wrap: balance;
+      }
+
+      /* Hydraulic Wave SVG motion */
+      .wave-track {
+        will-change: transform;
+      }
+
+      /* Clean focus outlines for accessibility */
+      input:focus-visible,
+      button:focus-visible,
+      select:focus-visible {
+        outline: 2px solid #0284c7;
+        outline-offset: 2px;
+      }
+
+      /* Remove spinner arrows on number inputs for clean tabular layout */
+      input[type='number']::-webkit-inner-spin-button,
+      input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type='number'] {
+        -moz-appearance: textfield;
+      }
+
+      /* Print styles for engineering reports */
+      @media print {
+        header,
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: #ffffff !important;
+        }
+        .print-break-inside {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-canal-100 selection:text-canal-900">
+    <!-- Top Bar: Strictly 3 zones (Wordmark — 4 concise links — 1 primary utility action) -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
+        <a
+          href="#calculator"
+          class="font-display text-lg font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0"
+        >
+          Обёрии Механикӣ
+        </a>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600" aria-label="Навигатсияи асосӣ">
+          <a href="#calculator" class="hover:text-canal-700 transition-colors whitespace-nowrap shrink-0">Ҳисобкунӣ</a>
+          <a href="#crops-section" class="hover:text-canal-700 transition-colors whitespace-nowrap shrink-0">Сохтори кишт</a>
+          <a href="#stages-section" class="hover:text-canal-700 transition-colors whitespace-nowrap shrink-0">Муқоисаи зинаҳо</a>
+          <a href="#methodology" class="hover:text-canal-700 transition-colors whitespace-nowrap shrink-0">Методика</a>
+        </nav>
+
+        <div class="flex items-center shrink-0">
+          <button
+            id="btn-export-csv"
+            type="button"
+            class="px-4 py-2 min-h-[40px] text-sm font-medium text-white bg-canal-700 hover:bg-canal-900 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          >
+            Содироти CSV
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-10">
+      <!-- Editorial Page Header -->
+      <section class="space-y-2 border-b border-slate-200 pb-6">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500">
+          <span>Гидромелиоратсия ва иқтисоди кишоварзӣ</span>
+          <span aria-hidden="true">·</span>
+          <span>Ҷумҳурии Тоҷикистон</span>
+          <span aria-hidden="true">·</span>
+          <span id="hero-region-label">Минтақа: Восеъ</span>
+        </div>
+        <h1 class="font-display text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance max-w-4xl">
+          Мини-Платформаи ҳисоби самаранокии обёрии механикӣ
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          Арзёбии муҳандисию иқтисодии сарфи қувваи барқ, арзиши кумулятивии 1 м³ об ва самаранокии молиявии сохтори кишт дар шароити стансияҳои насосӣ.
+        </p>
+      </section>
+
+      <!-- Main Workspace: Left Input Panel + Right Hydraulic Visual & 8 KPI Cards -->
+      <section id="calculator" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Input Parameters Card -->
+        <div class="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-6 space-y-6">
+          <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <h2 class="font-display text-lg font-bold text-slate-900">Параметрҳои вуруд</h2>
+            <button
+              id="btn-reset-defaults"
+              type="button"
+              class="text-xs font-medium text-slate-500 hover:text-canal-700 transition-colors whitespace-nowrap cursor-pointer"
+            >
+              Бозсозӣ
+            </button>
+          </div>
+
+          <form id="irrigation-form" class="space-y-5" novalidate>
+            <!-- Region -->
+            <div class="space-y-1.5">
+              <label for="input-region" class="block text-sm font-medium text-slate-700">
+                Минтақаи обёрӣ
+              </label>
+              <input
+                id="input-region"
+                name="region"
+                type="text"
+                list="tajik-regions"
+                value="Восеъ"
+                required
+                placeholder="Масалан: Восеъ"
+                class="w-full min-h-[42px] px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:bg-white focus:border-canal-600 transition-colors"
+              />
+              <datalist id="tajik-regions">
+                <option value="Восеъ"></option>
+                <option value="Данғара"></option>
+                <option value="Зафаробод"></option>
+                <option value="Ёвон"></option>
+                <option value="Қубодиён"></option>
+              </datalist>
+            </div>
+
+            <!-- Pumping Station Stage (1 - 5) -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-medium text-slate-700">Зинаи стансияи насосӣ</span>
+                <span class="font-mono text-xs text-slate-500 tabular-nums" id="stage-head-hint">H = 60 м</span>
+              </div>
+              <div class="grid grid-cols-5 gap-1.5 p-1 bg-slate-100 rounded-lg" role="radiogroup" aria-label="Зинаи стансияи насосӣ">
+                <button type="button" data-stage="1" class="stage-btn min-h-[40px] rounded-md text-sm font-mono font-semibold transition-all cursor-pointer bg-white text-canal-700 shadow-sm">1</button>
+                <button type="button" data-stage="2" class="stage-btn min-h-[40px] rounded-md text-sm font-mono font-semibold transition-all cursor-pointer text-slate-600 hover:text-slate-900">2</button>
+                <button type="button" data-stage="3" class="stage-btn min-h-[40px] rounded-md text-sm font-mono font-semibold transition-all cursor-pointer text-slate-600 hover:text-slate-900">3</button>
+                <button type="button" data-stage="4" class="stage-btn min-h-[40px] rounded-md text-sm font-mono font-semibold transition-all cursor-pointer text-slate-600 hover:text-slate-900">4</button>
+                <button type="button" data-stage="5" class="stage-btn min-h-[40px] rounded-md text-sm font-mono font-semibold transition-all cursor-pointer text-slate-600 hover:text-slate-900">5</button>
+              </div>
+              <input id="input-stage" type="hidden" value="1" />
+            </div>
+
+            <!-- Land Area (ha) -->
+            <div class="space-y-1.5">
+              <label for="input-area" class="block text-sm font-medium text-slate-700">
+                Майдони умумии замин
+              </label>
+              <div class="relative">
+                <input
+                  id="input-area"
+                  name="areaHa"
+                  type="number"
+                  step="0.01"
+                  min="0.1"
+                  value="50.00"
+                  required
+                  class="w-full min-h-[42px] pl-3.5 pr-16 py-2 text-sm font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:bg-white focus:border-canal-600 transition-colors"
+                />
+                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 pointer-events-none">
+                  гектар
+                </span>
+              </div>
+            </div>
+
+            <!-- Electricity Tariff -->
+            <div class="space-y-1.5">
+              <label for="input-elec" class="block text-sm font-medium text-slate-700">
+                Тарифи қувваи барқ
+              </label>
+              <div class="relative">
+                <input
+                  id="input-elec"
+                  name="elecTariff"
+                  type="number"
+                  step="0.0001"
+                  min="0"
+                  value="0.1436"
+                  required
+                  class="w-full min-h-[42px] pl-3.5 pr-24 py-2 text-sm font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:bg-white focus:border-canal-600 transition-colors"
+                />
+                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 pointer-events-none">
+                  сом/кВт·ч
+                </span>
+              </div>
+            </div>
+
+            <!-- Water Tariff -->
+            <div class="space-y-1.5">
+              <label for="input-water" class="block text-sm font-medium text-slate-700">
+                Тарифи об
+              </label>
+              <div class="relative">
+                <input
+                  id="input-water"
+                  name="waterTariff"
+                  type="number"
+                  step="0.001"
+                  min="0"
+                  value="0.05"
+                  required
+                  class="w-full min-h-[42px] pl-3.5 pr-20 py-2 text-sm font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:bg-white focus:border-canal-600 transition-colors"
+                />
+                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 pointer-events-none">
+                  сом/м³
+                </span>
+              </div>
+            </div>
+
+            <!-- Inline Validation Error -->
+            <div
+              id="form-error"
+              role="alert"
+              class="hidden text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5"
+            ></div>
+
+            <!-- Primary CTA -->
+            <button
+              id="btn-calculate"
+              type="submit"
+              class="w-full min-h-[46px] px-5 py-2.5 bg-canal-700 hover:bg-canal-900 active:scale-[0.99] text-white font-display font-semibold text-sm rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-4.5 5.4-7 9.1-7 12.2A7 7 0 0 0 19 15.2C19 12.1 16.5 8.4 12 3z" />
+              </svg>
+              <span>Ҳисоб кардан</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Dashboard Column: Hydraulic Wave Banner + 8 Output KPI Cards -->
+        <div class="lg:col-span-8 space-y-6">
+          <!-- Interactive Hydraulic Water-Fill & Wave Monitor -->
+          <div class="relative overflow-hidden bg-white border border-slate-200 rounded-xl p-6 min-h-[164px] flex flex-col justify-between">
+            <!-- Animated SVG Wave Layer -->
+            <div
+              id="hydraulic-wave-fill"
+              class="absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-canal-100/90 via-canal-50/75 to-transparent pointer-events-none"
+              style="transform-origin: bottom center;"
+            >
+              <svg
+                id="wave-svg-layer"
+                class="wave-track absolute -top-6 left-0 w-[200%] h-8 text-canal-100/80"
+                viewBox="0 0 1200 60"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M0,30 C150,54 150,54 300,30 C450,6 450,6 600,30 C750,54 750,54 900,30 C1050,6 1050,6 1200,30 L1200,60 L0,60 Z"
+                />
+              </svg>
+            </div>
+
+            <div class="relative z-10 flex flex-wrap items-start justify-between gap-4">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 text-xs font-medium text-canal-700">
+                  <span id="summary-region">Минтақа: Восеъ</span>
+                  <span aria-hidden="true">·</span>
+                  <span id="summary-stage">Зинаи 1</span>
+                  <span aria-hidden="true">·</span>
+                  <span id="summary-area" class="tabular-nums">50.00 га</span>
+                </div>
+                <h2 class="font-display text-xl font-bold text-slate-900">
+                  Натиҷаҳои ҳисоби гидромелиоративӣ ва иқтисодӣ
+                </h2>
+              </div>
+
+              <div class="text-right">
+                <div class="text-xs font-medium text-slate-500">Ҳаҷми умумии обтаъминкунӣ</div>
+                <div id="kpi-total-volume" class="font-mono text-xl font-semibold text-canal-900 tabular-nums">
+                  335 000 м³
+                </div>
+              </div>
+            </div>
+
+            <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div>
+                <span class="text-slate-500 block">Сарфи хоси барқ</span>
+                <span id="summary-specific-energy" class="font-mono font-semibold text-slate-800 tabular-nums">0.3018 кВт·ч/м³</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Ҳиссаи барқ дар 1 м³</span>
+                <span id="summary-elec-share" class="font-mono font-semibold text-slate-800 tabular-nums">0.0433 сом/м³</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Ҳиссаи тарифи об</span>
+                <span id="summary-water-share" class="font-mono font-semibold text-slate-800 tabular-nums">0.0500 сом/м³</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Фоидаи холис пас аз об</span>
+                <span id="summary-after-water" class="font-mono font-semibold text-agrarian-700 tabular-nums">1 998.48 ҳаз.сом</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 Output KPI Cards Grid -->
+          <div id="kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- 1. Баландии напор -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Баландии напор (H)</h3>
+                <span class="font-mono text-xs text-slate-400">H = 60 × Z</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-head" class="font-mono text-2xl sm:text-[26px] font-semibold text-slate-900 tabular-nums">60 м</span>
+                <span class="text-xs text-slate-500">Напори геодезӣ</span>
+              </div>
+            </article>
+
+            <!-- 2. КПД агрегат -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">КПД агрегат (η)</h3>
+                <span class="font-mono text-xs text-slate-400">Меъёри насосӣ</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-eta" class="font-mono text-2xl sm:text-[26px] font-semibold text-slate-900 tabular-nums">0.65</span>
+                <span class="text-xs text-slate-500">65% самаранокии техникӣ</span>
+              </div>
+            </article>
+
+            <!-- 3. Арзиши 1 м3 об (Кумулятивӣ) -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Арзиши 1 м³ об (Кумулятивӣ)</h3>
+                <span class="font-mono text-xs text-canal-700">Об + Барқ</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-cum-cost" class="font-mono text-2xl sm:text-[26px] font-semibold text-canal-700 tabular-nums">0.0933</span>
+                <span class="text-xs font-medium text-slate-600">сомонӣ/м³</span>
+              </div>
+            </article>
+
+            <!-- 4. Меъёри миёнаи обёрии зироат -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Меъёри миёнаи обёрии зироат</h3>
+                <span class="font-mono text-xs text-slate-400">Вазннок</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-avg-norm" class="font-mono text-2xl sm:text-[26px] font-semibold text-canal-700 tabular-nums">6700.0</span>
+                <span class="text-xs font-medium text-slate-600">м³/га</span>
+              </div>
+            </article>
+
+            <!-- 5. Хароҷоти умумии об ба майдон -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Хароҷоти умумии об ба майдон</h3>
+                <span class="font-mono text-xs text-slate-400">Барои мавсим</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-total-water-cost" class="font-mono text-2xl sm:text-[26px] font-semibold text-slate-900 tabular-nums">31270.61</span>
+                <span class="text-xs font-medium text-slate-600">сомонӣ</span>
+              </div>
+            </article>
+
+            <!-- 6. Даромади миёнаи холис аз 1 га -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Даромади миёнаи холис аз 1 га</h3>
+                <span class="font-mono text-xs text-agrarian-700">Аз 1 гектар</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-income-ha" class="font-mono text-2xl sm:text-[26px] font-semibold text-agrarian-700 tabular-nums">40595</span>
+                <span class="text-xs font-medium text-slate-600">сомонӣ/га</span>
+              </div>
+            </article>
+
+            <!-- 7. Фоидаи холиси умумӣ -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Фоидаи холиси умумӣ</h3>
+                <span class="font-mono text-xs text-agrarian-700">Ба кулли майдон</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-total-profit" class="font-mono text-2xl sm:text-[26px] font-semibold text-agrarian-700 tabular-nums">2029.75</span>
+                <span class="text-xs font-medium text-slate-600">ҳаз.сомонӣ</span>
+              </div>
+            </article>
+
+            <!-- 8. Самаранокӣ аз 1 м3 об -->
+            <article class="kpi-card bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm font-medium text-slate-600">Самаранокӣ аз 1 м³ об</h3>
+                <span class="font-mono text-xs text-agrarian-700">Маҳсулнокии об</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <span id="out-water-prod" class="font-mono text-2xl sm:text-[26px] font-semibold text-agrarian-700 tabular-nums">6.059</span>
+                <span class="text-xs font-medium text-slate-600">сомонӣ/м³</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Crop Structure & Revenue Breakdown -->
+      <section id="crops-section" class="bg-white border border-slate-200 rounded-xl p-6 space-y-6 print-break-inside">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div class="space-y-1">
+            <h2 class="font-display text-lg font-bold text-slate-900">Сохтори кишт ва саҳми зироатҳо</h2>
+            <p class="text-xs text-slate-500">
+              Тақсимоти доимии зироатҳо, сарфи об ва даромаднокии вазннок аз рӯи майдони интихобшуда.
+            </p>
+          </div>
+          <div class="flex items-center gap-3 no-print">
+            <button
+              id="btn-reset-crops"
+              type="button"
+              class="hidden px-3 py-2 min-h-[40px] text-xs font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+            >
+              Барқарорсозии доимиҳо
+            </button>
+            <button
+              id="btn-toggle-crop-edit"
+              type="button"
+              class="px-3.5 py-2 min-h-[40px] text-xs font-medium text-canal-700 bg-canal-50 hover:bg-canal-100 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+            >
+              Таҳрири сохтори кишт
+            </button>
+          </div>
+        </div>
+
+        <!-- Proportional Crop Allocation Bar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>Тақсимоти майдони кишт</span>
+            <span id="crop-share-total" class="font-mono font-medium text-slate-700 tabular-nums">Ҳиссаи умумӣ: 100%</span>
+          </div>
+          <div id="crop-allocation-bar" class="h-3 w-full rounded-lg overflow-hidden flex bg-slate-100"></div>
+          <div id="crop-share-warning" class="hidden text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            Диққат: Ҷамъи ҳиссаҳои кишт бояд ба 100% баробар бошад, то ҳисоби вазннок дақиқ гардад.
+          </div>
+        </div>
+
+        <!-- Responsive Crop Data Grid -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-xs font-medium text-slate-500">
+                <th class="py-3 pr-4">Зироат</th>
+                <th class="py-3 px-3 text-right">Ҳисса (%)</th>
+                <th class="py-3 px-3 text-right">Майдон (га)</th>
+                <th class="py-3 px-3 text-right">Меъёри об (м³/га)</th>
+                <th class="py-3 px-3 text-right">Ҳосилнокӣ (т/га)</th>
+                <th class="py-3 px-3 text-right">Нархи фурӯш (сом/т)</th>
+                <th class="py-3 pl-3 text-right">Саҳми даромад (сом/га)</th>
+              </tr>
+            </thead>
+            <tbody id="crops-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 3: Pumping Stages 1-5 Sensitivity Comparison -->
+      <section id="stages-section" class="bg-white border border-slate-200 rounded-xl p-6 space-y-6 print-break-inside">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div class="space-y-1">
+            <h2 class="font-display text-lg font-bold text-slate-900">Муқоисаи самаранокӣ байни зинаҳои 1 то 5</h2>
+            <p class="text-xs text-slate-500">
+              Тағйирёбии арзиши 1 м³ об ва хароҷоти мавсимӣ вобаста ба баландии напор барои параметрҳои ҷорӣ.
+            </p>
+          </div>
+          <span class="text-xs font-mono text-slate-500 tabular-nums" id="stages-tariffs-note">
+            Барқ: 0.1436 · Об: 0.05
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Stage Table -->
+          <div class="lg:col-span-7 overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 text-xs font-medium text-slate-500">
+                  <th class="py-2.5 pr-3">Зина</th>
+                  <th class="py-2.5 px-3 text-right">Напор (H, м)</th>
+                  <th class="py-2.5 px-3 text-right">Барқ (кВт·ч/м³)</th>
+                  <th class="py-2.5 px-3 text-right">Арзиши 1 м³ (сом)</th>
+                  <th class="py-2.5 pl-3 text-right">Хароҷоти об (сом)</th>
+                </tr>
+              </thead>
+              <tbody id="stages-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+
+          <!-- Visual Horizontal Cost Comparison Bars -->
+          <div class="lg:col-span-5 space-y-3" id="stages-bar-chart" aria-label="Диаграммаи арзиши 1 м³ об аз рӯи зинаҳо"></div>
+        </div>
+      </section>
+
+      <!-- Section 4: Engineering Methodology -->
+      <section id="methodology" class="border-t border-slate-200 pt-8 space-y-6">
+        <div class="space-y-1">
+          <h2 class="font-display text-lg font-bold text-slate-900">Методикаи ҳисобкунӣ</h2>
+          <p class="text-xs text-slate-500">
+            Асосҳои физикию иқтисодии модел барои шароити стансияҳои насосии Тоҷикистон.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600">
+          <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-2">
+            <h3 class="font-display font-semibold text-slate-900">01. Арзиши кумулятивии об</h3>
+            <p class="leading-relaxed text-xs sm:text-sm">
+              Сарфи хоси энергия бо назардошти талафоти шабакавӣ (<span class="font-mono">k = 1.2</span>) ва КПД агрегат (<span class="font-mono">η = 0.65</span>) ҳисоб мешавад:
+            </p>
+            <div class="font-mono text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800">
+              C_об = T_об + [(9.81 × H × 1.2) / (3600 × η)] × T_барқ
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-2">
+            <h3 class="font-display font-semibold text-slate-900">02. Меъёри миёна ва хароҷот</h3>
+            <p class="leading-relaxed text-xs sm:text-sm">
+              Меъёри миёнаи обёрӣ аз рӯи ҳиссаи чор зироати асосӣ (Пахта, Тарбуз, Беда, Картошка) вазннок ҳисоб карда мешавад:
+            </p>
+            <div class="font-mono text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800">
+              Х_об = Майдон × М_миёна × C_об
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-2">
+            <h3 class="font-display font-semibold text-slate-900">03. Самаранокӣ аз 1 м³ об</h3>
+            <p class="leading-relaxed text-xs sm:text-sm">
+              Самаранокии иқтисодии об даромади миёнаи холисро аз 1 гектар ба меъёри миёнаи обёрии он тақсим мекунад:
+            </p>
+            <div class="font-mono text-xs bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800">
+              С_об = Д_га / М_миёна (сомонӣ/м³)
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Quiet Footer -->
+    <footer class="border-t border-slate-200 bg-white mt-12">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+        <div>
+          © 2026 Мини-Платформаи ҳисоби самаранокии обёрии механикӣ · Лоиҳаи кушодаасос барои GitHub Pages
+        </div>
+        <div class="flex items-center gap-4 no-print">
+          <button
+            id="btn-print-report"
+            type="button"
+            class="text-slate-600 hover:text-canal-700 font-medium transition-colors cursor-pointer"
+          >
+            Чопи ҳисобот
+          </button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modular ES6+ Application Logic -->
+    <script type="module">
+      /**
+       * Доимиҳои физикӣ ва сохтори пешфарзи кишт (Constants)
+       */
+      const PHYSICS = Object.freeze({
+        GRAVITY: 9.81,
+        HEAD_PER_STAGE_M: 60,
+        PUMP_EFFICIENCY: 0.65,
+        HYDRAULIC_LOSS_FACTOR: 1.2,
+        SECONDS_PER_HOUR: 3600,
+      });
+
+      const DEFAULT_INPUTS = Object.freeze({
+        region: 'Восеъ',
+        stage: 1,
+        areaHa: 50.0,
+        elecTariff: 0.1436,
+        waterTariff: 0.05,
+      });
+
+      const DEFAULT_CROPS = Object.freeze([
+        {
+          id: 'cotton',
+          nameTj: 'Пахта',
+          sharePct: 30,
+          waterNorm: 7500,
+          pricePerTon: 7000,
+          yieldPerHa: 3.55,
+          barColor: 'bg-canal-600',
+        },
+        {
+          id: 'watermelon',
+          nameTj: 'Тарбуз',
+          sharePct: 30,
+          waterNorm: 4500,
+          pricePerTon: 1200,
+          yieldPerHa: 45,
+          barColor: 'bg-agrarian-600',
+        },
+        {
+          id: 'alfalfa',
+          nameTj: 'Беда',
+          sharePct: 20,
+          waterNorm: 9500,
+          pricePerTon: 1800,
+          yieldPerHa: 16.5,
+          barColor: 'bg-emerald-400',
+        },
+        {
+          id: 'potato',
+          nameTj: 'Картошка',
+          sharePct: 20,
+          waterNorm: 6000,
+          pricePerTon: 2500,
+          yieldPerHa: 22,
+          barColor: 'bg-amber-500',
+        },
+      ]);
+
+      /**
+       * Ҳолати барнома (Application State)
+       */
+      const state = {
+        inputs: { ...DEFAULT_INPUTS },
+        crops: DEFAULT_CROPS.map((crop) => ({ ...crop })),
+        isEditingCrops: false,
+        results: null,
+      };
+
+      /**
+       * Модули ҳисобкунии гидромелиоративӣ ва иқтисодӣ (Pure Hydraulic & Economic Engine)
+       */
+      const HydraulicEngine = {
+        calcHeadM(stage) {
+          return stage * PHYSICS.HEAD_PER_STAGE_M;
+        },
+
+        calcSpecificEnergyKwhPerM3(headM) {
+          return (
+            (PHYSICS.GRAVITY * headM * PHYSICS.HYDRAULIC_LOSS_FACTOR) /
+            (PHYSICS.SECONDS_PER_HOUR * PHYSICS.PUMP_EFFICIENCY)
+          );
+        },
+
+        compute(inputs, crops) {
+          const headM = this.calcHeadM(inputs.stage);
+          const efficiency = PHYSICS.PUMP_EFFICIENCY;
+          const specificEnergyKwh = this.calcSpecificEnergyKwhPerM3(headM);
+          const elecCostPerM3 = specificEnergyKwh * inputs.elecTariff;
+          const cumulativeWaterCost = inputs.waterTariff + elecCostPerM3;
+
+          // Weighted average irrigation norm & crop revenue per ha
+          let avgWaterNorm = 0;
+          let netIncomePerHa = 0;
+
+          const cropBreakdown = crops.map((crop) => {
+            const weight = crop.sharePct / 100;
+            const cropAreaHa = inputs.areaHa * weight;
+            const weightedNorm = weight * crop.waterNorm;
+            const cropRevenuePerHa = crop.yieldPerHa * crop.pricePerTon;
+            const weightedRevenuePerHa = weight * cropRevenuePerHa;
+
+            avgWaterNorm += weightedNorm;
+            netIncomePerHa += weightedRevenuePerHa;
+
+            return {
+              ...crop,
+              cropAreaHa,
+              weightedNorm,
+              cropRevenuePerHa,
+              weightedRevenuePerHa,
+            };
+          });
+
+          const totalWaterVolumeM3 = inputs.areaHa * avgWaterNorm;
+          const totalWaterCost = totalWaterVolumeM3 * cumulativeWaterCost;
+          const totalNetProfitSom = netIncomePerHa * inputs.areaHa;
+          const totalNetProfitThousand = totalNetProfitSom / 1000;
+          const netAfterWaterThousand = (totalNetProfitSom - totalWaterCost) / 1000;
+          const waterProductivity = avgWaterNorm > 0 ? netIncomePerHa / avgWaterNorm : 0;
+
+          // Stage 1..5 sensitivity matrix
+          const stagesMatrix = [1, 2, 3, 4, 5].map((stageNum) => {
+            const stageHead = this.calcHeadM(stageNum);
+            const stageEnergy = this.calcSpecificEnergyKwhPerM3(stageHead);
+            const stageCumCost = inputs.waterTariff + stageEnergy * inputs.elecTariff;
+            const stageTotalCost = totalWaterVolumeM3 * stageCumCost;
+            return {
+              stage: stageNum,
+              headM: stageHead,
+              specificEnergyKwh: stageEnergy,
+              cumulativeWaterCost: stageCumCost,
+              totalWaterCost: stageTotalCost,
+            };
+          });
+
+          return {
+            headM,
+            efficiency,
+            specificEnergyKwh,
+            elecCostPerM3,
+            cumulativeWaterCost,
+            avgWaterNorm,
+            totalWaterVolumeM3,
+            totalWaterCost,
+            netIncomePerHa,
+            totalNetProfitThousand,
+            netAfterWaterThousand,
+            waterProductivity,
+            cropBreakdown,
+            stagesMatrix,
+          };
+        },
+      };
+
+      /**
+       * Форматкунии рақамҳо (Number Formatters)
+       */
+      const Format = {
+        spaced(num, decimals = 2) {
+          const fixed = Number(num).toFixed(decimals);
+          const [intPart, decPart] = fixed.split('.');
+          const spacedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+          return decPart !== undefined ? `${spacedInt}.${decPart}` : spacedInt;
+        },
+        plain(num, decimals = 2) {
+          return Number(num).toFixed(decimals);
+        },
+      };
+
+      /**
+       * Аниматсияҳои GSAP (Wave Fill + Fade-Up Cards)
+       */
+      const GSAPAnimator = {
+        prefersReducedMotion() {
+          return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        },
+
+        initIdleWave() {
+          if (typeof window.gsap === 'undefined' || this.prefersReducedMotion()) return;
+          window.gsap.to('#wave-svg-layer', {
+            xPercent: -50,
+            duration: 6,
+            repeat: -1,
+            ease: 'none',
+          });
+        },
+
+        playCalculationSequence(stage) {
+          if (typeof window.gsap === 'undefined' || this.prefersReducedMotion()) return;
+
+          const gsap = window.gsap;
+          const cards = document.querySelectorAll('.kpi-card');
+          const waveFill = document.getElementById('hydraulic-wave-fill');
+
+          // 1. Hydraulic water surge effect inside monitor
+          if (waveFill) {
+            const targetScaleY = 0.72 + stage * 0.09;
+            gsap.killTweensOf(waveFill);
+            gsap.fromTo(
+              waveFill,
+              { scaleY: 0.25, opacity: 0.55 },
+              {
+                scaleY: Math.min(targetScaleY, 1.15),
+                opacity: 1,
+                duration: 0.55,
+                ease: 'power2.out',
+              }
+            );
+          }
+
+          // 2. Staggered fade-up reveal for KPI cards (compositor-only transform & opacity)
+          gsap.killTweensOf(cards);
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 18 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.45,
+              stagger: 0.055,
+              delay: 0.14,
+              ease: 'power3.out',
+              clearProps: 'transform,opacity',
+            }
+          );
+        },
+      };
+
+      /**
+       * Идоракунии интерфейс (UI Renderer)
+       */
+      const UIRenderer = {
+        renderResults(inputs, results) {
+          // Header & Hydraulic Banner metadata
+          document.getElementById('hero-region-label').textContent = `Минтақа: ${inputs.region}`;
+          document.getElementById('summary-region').textContent = `Минтақа: ${inputs.region}`;
+          document.getElementById('summary-stage').textContent = `Зинаи ${inputs.stage}`;
+          document.getElementById('summary-area').textContent = `${Format.plain(inputs.areaHa, 2)} га`;
+          document.getElementById('stage-head-hint').textContent = `H = ${results.headM} м`;
+
+          document.getElementById('kpi-total-volume').textContent = `${Format.spaced(results.totalWaterVolumeM3, 0)} м³`;
+          document.getElementById('summary-specific-energy').textContent = `${Format.plain(results.specificEnergyKwh, 4)} кВт·ч/м³`;
+          document.getElementById('summary-elec-share').textContent = `${Format.plain(results.elecCostPerM3, 4)} сом/м³`;
+          document.getElementById('summary-water-share').textContent = `${Format.plain(inputs.waterTariff, 4)} сом/м³`;
+          document.getElementById('summary-after-water').textContent = `${Format.spaced(results.netAfterWaterThousand, 2)} ҳаз.сом`;
+
+          // 8 Output KPI Cards
+          document.getElementById('out-head').textContent = `${results.headM} м`;
+          document.getElementById('out-eta').textContent = Format.plain(results.efficiency, 2);
+          document.getElementById('out-cum-cost').textContent = Format.plain(results.cumulativeWaterCost, 4);
+          document.getElementById('out-avg-norm').textContent = Format.plain(results.avgWaterNorm, 1);
+          document.getElementById('out-total-water-cost').textContent = Format.plain(results.totalWaterCost, 2);
+          document.getElementById('out-income-ha').textContent = Format.plain(results.netIncomePerHa, 0);
+          document.getElementById('out-total-profit').textContent = Format.plain(results.totalNetProfitThousand, 2);
+          document.getElementById('out-water-prod').textContent = Format.plain(results.waterProductivity, 3);
+
+          this.renderCropsSection(results.cropBreakdown);
+          this.renderStagesSection(inputs, results.stagesMatrix);
+        },
+
+        renderCropsSection(cropBreakdown) {
+          const totalShare = cropBreakdown.reduce((acc, item) => acc + item.sharePct, 0);
+          const shareTotalEl = document.getElementById('crop-share-total');
+          const shareWarnEl = document.getElementById('crop-share-warning');
+          const barEl = document.getElementById('crop-allocation-bar');
+          const tbodyEl = document.getElementById('crops-table-body');
+
+          shareTotalEl.textContent = `Ҳиссаи умумӣ: ${Format.plain(totalShare, 0)}%`;
+          const isValidTotal = Math.abs(totalShare - 100) < 0.01;
+          shareWarnEl.classList.toggle('hidden', isValidTotal);
+
+          // Stacked allocation bar
+          barEl.innerHTML = cropBreakdown
+            .map((crop) => {
+              const widthPct = totalShare > 0 ? (crop.sharePct / totalShare) * 100 : 25;
+              return `<div class="${crop.barColor} h-full transition-all duration-300" style="width: ${widthPct}%" title="${crop.nameTj}: ${crop.sharePct}%"></div>`;
+            })
+            .join('');
+
+          // Table rows (read-only or editable)
+          tbodyEl.innerHTML = cropBreakdown
+            .map((crop, idx) => {
+              if (state.isEditingCrops) {
+                return `
+                  <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="py-3 pr-4 font-medium text-slate-900">
+                      <span class="inline-flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-sm ${crop.barColor}" aria-hidden="true"></span>
+                        <span>${crop.nameTj}</span>
+                      </span>
+                    </td>
+                    <td class="py-2 px-2 text-right">
+                      <input data-crop-idx="${idx}" data-field="sharePct" type="number" step="1" min="0" max="100" value="${crop.sharePct}" class="crop-edit-input w-20 text-right px-2 py-1.5 text-xs font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-md" />
+                    </td>
+                    <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-600">${Format.plain(crop.cropAreaHa, 2)}</td>
+                    <td class="py-2 px-2 text-right">
+                      <input data-crop-idx="${idx}" data-field="waterNorm" type="number" step="100" min="0" value="${crop.waterNorm}" class="crop-edit-input w-24 text-right px-2 py-1.5 text-xs font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-md" />
+                    </td>
+                    <td class="py-2 px-2 text-right">
+                      <input data-crop-idx="${idx}" data-field="yieldPerHa" type="number" step="0.05" min="0" value="${crop.yieldPerHa}" class="crop-edit-input w-20 text-right px-2 py-1.5 text-xs font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-md" />
+                    </td>
+                    <td class="py-2 px-2 text-right">
+                      <input data-crop-idx="${idx}" data-field="pricePerTon" type="number" step="50" min="0" value="${crop.pricePerTon}" class="crop-edit-input w-24 text-right px-2 py-1.5 text-xs font-mono tabular-nums bg-slate-50 border border-slate-200 rounded-md" />
+                    </td>
+                    <td class="py-3 pl-3 text-right font-mono font-semibold tabular-nums text-agrarian-700">${Format.spaced(crop.weightedRevenuePerHa, 0)}</td>
+                  </tr>
+                `;
+              }
+
+              return `
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 pr-4 font-medium text-slate-900">
+                    <span class="inline-flex items-center gap-2">
+                      <span class="w-2.5 h-2.5 rounded-sm ${crop.barColor}" aria-hidden="true"></span>
+                      <span>${crop.nameTj}</span>
+                    </span>
+                  </td>
+                  <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-700">${crop.sharePct}%</td>
+                  <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-600">${Format.plain(crop.cropAreaHa, 2)}</td>
+                  <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-700">${Format.spaced(crop.waterNorm, 0)}</td>
+                  <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-700">${Format.plain(crop.yieldPerHa, 2)}</td>
+                  <td class="py-3 px-3 text-right font-mono tabular-nums text-slate-700">${Format.spaced(crop.pricePerTon, 0)}</td>
+                  <td class="py-3 pl-3 text-right font-mono font-semibold tabular-nums text-agrarian-700">${Format.spaced(crop.weightedRevenuePerHa, 0)}</td>
+                </tr>
+              `;
+            })
+            .join('');
+        },
+
+        renderStagesSection(inputs, stagesMatrix) {
+          document.getElementById('stages-tariffs-note').textContent =
+            `Барқ: ${Format.plain(inputs.elecTariff, 4)} · Об: ${Format.plain(inputs.waterTariff, 2)}`;
+
+          const tbodyEl = document.getElementById('stages-table-body');
+          const chartEl = document.getElementById('stages-bar-chart');
+          const maxCost = Math.max(...stagesMatrix.map((s) => s.cumulativeWaterCost), 0.0001);
+
+          tbodyEl.innerHTML = stagesMatrix
+            .map((row) => {
+              const isActive = row.stage === inputs.stage;
+              const rowClass = isActive
+                ? 'bg-canal-50/90 font-semibold text-canal-900'
+                : 'hover:bg-slate-50/80 text-slate-700';
+
+              return `
+                <tr class="${rowClass} transition-colors">
+                  <td class="py-2.5 pr-3 font-mono tabular-nums">Зинаи ${row.stage}${isActive ? ' (ҷорӣ)' : ''}</td>
+                  <td class="py-2.5 px-3 text-right font-mono tabular-nums">${row.headM} м</td>
+                  <td class="py-2.5 px-3 text-right font-mono tabular-nums">${Format.plain(row.specificEnergyKwh, 4)}</td>
+                  <td class="py-2.5 px-3 text-right font-mono tabular-nums text-canal-700">${Format.plain(row.cumulativeWaterCost, 4)}</td>
+                  <td class="py-2.5 pl-3 text-right font-mono tabular-nums">${Format.spaced(row.totalWaterCost, 2)}</td>
+                </tr>
+              `;
+            })
+            .join('');
+
+          chartEl.innerHTML = stagesMatrix
+            .map((row) => {
+              const widthPct = Math.max((row.cumulativeWaterCost / maxCost) * 100, 6);
+              const isActive = row.stage === inputs.stage;
+              const barColor = isActive ? 'bg-canal-700' : 'bg-canal-500/45';
+
+              return `
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="${isActive ? 'font-semibold text-canal-900' : 'text-slate-600'}">Зинаи ${row.stage} (${row.headM} м)</span>
+                    <span class="font-mono tabular-nums ${isActive ? 'font-semibold text-canal-900' : 'text-slate-600'}">${Format.plain(row.cumulativeWaterCost, 4)} сом/м³</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-slate-100 rounded-md overflow-hidden">
+                    <div class="${barColor} h-full rounded-md transition-all duration-300" style="width: ${widthPct}%"></div>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        },
+
+        updateStageButtons(activeStage) {
+          document.querySelectorAll('.stage-btn').forEach((btn) => {
+            const btnStage = Number(btn.getAttribute('data-stage'));
+            const isSelected = btnStage === activeStage;
+            btn.setAttribute('aria-checked', String(isSelected));
+            if (isSelected) {
+              btn.classList.add('bg-white', 'text-canal-700', 'shadow-sm');
+              btn.classList.remove('text-slate-600', 'hover:text-slate-900');
+            } else {
+              btn.classList.remove('bg-white', 'text-canal-700', 'shadow-sm');
+              btn.classList.add('text-slate-600', 'hover:text-slate-900');
+            }
+          });
+          document.getElementById('input-stage').value = String(activeStage);
+          document.getElementById('stage-head-hint').textContent = `H = ${HydraulicEngine.calcHeadM(activeStage)} м`;
+        },
+      };
+
+      /**
+       * Содироти ҳисобот (CSV Export)
+       */
+      const ReportExporter = {
+        downloadCsv(inputs, results) {
+          const rows = [
+            ['Параметр', 'Қимат', 'Воҳид'],
+            ['Минтақаи обёрӣ', inputs.region, '-'],
+            ['Зинаи стансияи насосӣ', inputs.stage, 'зина'],
+            ['Майдони умумии замин', inputs.areaHa.toFixed(2), 'га'],
+            ['Тарифи қувваи барқ', inputs.elecTariff.toFixed(4), 'сом/кВт·ч'],
+            ['Тарифи об', inputs.waterTariff.toFixed(4), 'сом/м³'],
+            ['Баландии напор (H)', results.headM, 'м'],
+            ['КПД агрегат (η)', results.efficiency.toFixed(2), '-'],
+            ['Арзиши 1 м³ об (Кумулятивӣ)', results.cumulativeWaterCost.toFixed(4), 'сомонӣ/м³'],
+            ['Меъёри миёнаи обёрии зироат', results.avgWaterNorm.toFixed(1), 'м³/га'],
+            ['Хароҷоти умумии об ба майдон', results.totalWaterCost.toFixed(2), 'сомонӣ'],
+            ['Даромади миёнаи холис аз 1 га', results.netIncomePerHa.toFixed(0), 'сомонӣ/га'],
+            ['Фоидаи холиси умумӣ', results.totalNetProfitThousand.toFixed(2), 'ҳаз.сомонӣ'],
+            ['Самаранокӣ аз 1 м³ об', results.waterProductivity.toFixed(3), 'сомонӣ/м³'],
+          ];
+
+          const csvContent = '\uFEFF' + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `obyorii-mekhaniki-${inputs.region.toLowerCase()}-zina-${inputs.stage}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        },
+      };
+
+      /**
+       * Санҷиш ва идоракунии рӯйдодҳо (Controller & Validation)
+       */
+      function readAndValidateInputs() {
+        const errorBox = document.getElementById('form-error');
+        const region = document.getElementById('input-region').value.trim();
+        const stage = Number(document.getElementById('input-stage').value);
+        const areaHa = Number(document.getElementById('input-area').value);
+        const elecTariff = Number(document.getElementById('input-elec').value);
+        const waterTariff = Number(document.getElementById('input-water').value);
+
+        const errors = [];
+        if (!region) errors.push('Лутфан номи минтақаро ворид кунед.');
+        if (!Number.isInteger(stage) || stage < 1 || stage > 5) errors.push('Зинаи стансия бояд аз 1 то 5 бошад.');
+        if (!Number.isFinite(areaHa) || areaHa <= 0) errors.push('Майдони замин бояд аз 0 зиёд бошад.');
+        if (!Number.isFinite(elecTariff) || elecTariff < 0) errors.push('Тарифи барқ наметавонад манфӣ бошад.');
+        if (!Number.isFinite(waterTariff) || waterTariff < 0) errors.push('Тарифи об наметавонад манфӣ бошад.');
+
+        if (errors.length > 0) {
+          errorBox.textContent = errors[0];
+          errorBox.classList.remove('hidden');
+          return null;
+        }
+
+        errorBox.classList.add('hidden');
+        return { region, stage, areaHa, elecTariff, waterTariff };
+      }
+
+      function executeCalculation(animate = true) {
+        const validInputs = readAndValidateInputs();
+        if (!validInputs) return;
+
+        state.inputs = validInputs;
+        state.results = HydraulicEngine.compute(state.inputs, state.crops);
+        UIRenderer.renderResults(state.inputs, state.results);
+
+        if (animate) {
+          GSAPAnimator.playCalculationSequence(state.inputs.stage);
+        }
+      }
+
+      function bindEvents() {
+        // Form submit ("Ҳисоб кардан")
+        document.getElementById('irrigation-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          executeCalculation(true);
+        });
+
+        // Pumping stage segmented buttons (1 - 5)
+        document.querySelectorAll('.stage-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const stage = Number(btn.getAttribute('data-stage'));
+            UIRenderer.updateStageButtons(stage);
+          });
+        });
+
+        // Reset defaults
+        document.getElementById('btn-reset-defaults').addEventListener('click', () => {
+          document.getElementById('input-region').value = DEFAULT_INPUTS.region;
+          document.getElementById('input-area').value = DEFAULT_INPUTS.areaHa.toFixed(2);
+          document.getElementById('input-elec').value = String(DEFAULT_INPUTS.elecTariff);
+          document.getElementById('input-water').value = String(DEFAULT_INPUTS.waterTariff);
+          UIRenderer.updateStageButtons(DEFAULT_INPUTS.stage);
+          state.crops = DEFAULT_CROPS.map((c) => ({ ...c }));
+          executeCalculation(true);
+        });
+
+        // Toggle crop editing
+        const toggleCropBtn = document.getElementById('btn-toggle-crop-edit');
+        const resetCropsBtn = document.getElementById('btn-reset-crops');
+
+        toggleCropBtn.addEventListener('click', () => {
+          state.isEditingCrops = !state.isEditingCrops;
+          toggleCropBtn.textContent = state.isEditingCrops ? 'Анҷоми таҳрир' : 'Таҳрири сохтори кишт';
+          resetCropsBtn.classList.toggle('hidden', !state.isEditingCrops);
+          UIRenderer.renderCropsSection(state.results.cropBreakdown);
+        });
+
+        resetCropsBtn.addEventListener('click', () => {
+          state.crops = DEFAULT_CROPS.map((c) => ({ ...c }));
+          executeCalculation(false);
+        });
+
+        // Live crop input delegation
+        document.getElementById('crops-table-body').addEventListener('input', (e) => {
+          const target = e.target;
+          if (!target.classList.contains('crop-edit-input')) return;
+          const idx = Number(target.getAttribute('data-crop-idx'));
+          const field = target.getAttribute('data-field');
+          const val = Math.max(0, Number(target.value) || 0);
+          state.crops[idx][field] = val;
+
+          state.results = HydraulicEngine.compute(state.inputs, state.crops);
+          // Re-render KPI values & allocation bar without destroying active input focus
+          const totalShare = state.crops.reduce((acc, item) => acc + item.sharePct, 0);
+          document.getElementById('crop-share-total').textContent = `Ҳиссаи умумӣ: ${Format.plain(totalShare, 0)}%`;
+          document.getElementById('crop-share-warning').classList.toggle('hidden', Math.abs(totalShare - 100) < 0.01);
+          document.getElementById('crop-allocation-bar').innerHTML = state.crops
+            .map((crop) => {
+              const widthPct = totalShare > 0 ? (crop.sharePct / totalShare) * 100 : 25;
+              return `<div class="${crop.barColor} h-full transition-all duration-300" style="width: ${widthPct}%"></div>`;
+            })
+            .join('');
+          const rowRevEl = target.closest('tr')?.lastElementChild;
+          if (rowRevEl) {
+            rowRevEl.textContent = Format.spaced(state.results.cropBreakdown[idx].weightedRevenuePerHa, 0);
+          }
+
+          // Update KPI outputs live
+          document.getElementById('out-avg-norm').textContent = Format.plain(state.results.avgWaterNorm, 1);
+          document.getElementById('out-total-water-cost').textContent = Format.plain(state.results.totalWaterCost, 2);
+          document.getElementById('out-income-ha').textContent = Format.plain(state.results.netIncomePerHa, 0);
+          document.getElementById('out-total-profit').textContent = Format.plain(state.results.totalNetProfitThousand, 2);
+          document.getElementById('out-water-prod').textContent = Format.plain(state.results.waterProductivity, 3);
+          document.getElementById('kpi-total-volume').textContent = `${Format.spaced(state.results.totalWaterVolumeM3, 0)} м³`;
+          document.getElementById('summary-after-water').textContent = `${Format.spaced(state.results.netAfterWaterThousand, 2)} ҳаз.сом`;
+          UIRenderer.renderStagesSection(state.inputs, state.results.stagesMatrix);
+        });
+
+        // CSV Export & Print Report
+        document.getElementById('btn-export-csv').addEventListener('click', () => {
+          if (state.results) ReportExporter.downloadCsv(state.inputs, state.results);
+        });
+
+        document.getElementById('btn-print-report').addEventListener('click', () => {
+          window.print();
+        });
+      }
+
+      // Initialize on DOMContentLoaded
+      window.addEventListener('DOMContentLoaded', () => {
+        bindEvents();
+        UIRenderer.updateStageButtons(DEFAULT_INPUTS.stage);
+        executeCalculation(false);
+        GSAPAnimator.initIdleWave();
+      });
+    </script>
+  </body>
+</html>

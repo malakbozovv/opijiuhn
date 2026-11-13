@@ -1,0 +1,6 @@
+{
+  "name": "Обёрии Механикӣ — Платформаи Ҳисоби Самаранокӣ",
+  "description": "Мини-платформаи интерактивии ҳисоби самаранокии обёрии механикӣ ва иқтисодиёти зироатҳо дар Тоҷикистон.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
